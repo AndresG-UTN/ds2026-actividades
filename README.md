@@ -1,2 +1,2 @@
-# ds2026-actividades
+# ds2026-actividade
 # Gomez Andres s33 
