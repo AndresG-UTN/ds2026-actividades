@@ -1,0 +1,45 @@
+h1{
+    color:  red;
+    font-family: Arial;
+}
+.texto{
+    color:red;
+    margin: 15px;
+    padding: 10px;
+}
+
+ul{
+    margin: 15px;
+    padding: 10px;
+}
+
+
+body{
+    background-color:var(--color-fondo);
+    font-family: Verdana;
+}
+:root{
+    --color-principal: #343dbd;
+    --color-secundario: #2ecc71;
+    --color-fondo: #e9f5a3d0;
+    --borde-radio: 10px;
+    --sombra: 0 2px 5px rgba(0,0,0,0.2);
+}
+
+nav{
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+
+}
+
+*{
+    box-sizing: border-box;
+}
+
+section{
+    border-radius: var(--borde-radio);
+    box-shadow: var(--sombra);
+    padding: 15px;
+    background-color: white;
+}
