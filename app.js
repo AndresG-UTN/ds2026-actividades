@@ -1,0 +1,10 @@
+const nombre = "Andres";
+const edad=20;
+const materia="desarrollo de software";
+const msj= `mi nombre es ${nombre}, tengo ${edad} años y estoy cursando ${materia}`;
+console.log(msj);
+ let i=0;
+    i+=1;
+    i+=1;
+    i+=1;
+console.log(`${i}`);
