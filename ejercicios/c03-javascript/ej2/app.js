@@ -26,3 +26,9 @@ function Diadelasemana(numero){
 
 console.log(`Dia de la semana: ${Diadelasemana(24)}`);
 console.log(`nota: ${Clasificarnota(11)}`);
+console.log(`Dia de la semana: ${Diadelasemana(1)}`);
+console.log(`nota: ${Clasificarnota(5)}`);
+console.log(`Dia de la semana: ${Diadelasemana(3)}`);
+console.log(`nota: ${Clasificarnota(8)}`);
+console.log(`Dia de la semana: ${Diadelasemana(7)}`);
+console.log(`nota: ${Clasificarnota(1)}`);
