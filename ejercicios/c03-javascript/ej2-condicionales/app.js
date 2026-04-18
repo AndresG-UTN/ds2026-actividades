@@ -1,4 +1,4 @@
-function Clasificarnota(nota){
+const Clasificarnota = (nota)=>{
 
     if (nota<4) return "desaprobado";
     if(nota>3 && nota<8) return "aprobado";
@@ -7,7 +7,7 @@ function Clasificarnota(nota){
 
 }
 
-function Diadelasemana(numero){
+const Diadelasemana=(numero)=>{
     
     switch(numero){
     

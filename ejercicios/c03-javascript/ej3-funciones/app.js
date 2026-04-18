@@ -1,4 +1,4 @@
-function CalcularPrecioFinal(Monto, Mediopago){
+const CalcularPrecioFinal = (Monto, Mediopago) => {
 
     if(Monto<200) 
         return Monto

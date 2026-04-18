@@ -16,7 +16,7 @@ for(const num of Array){
 
 console.log(`suma: ${suma} | promedio: ${promedio} | mayor: ${may} | menor: ${men}`);
 
-function generarAsteriscos(n){
+const generarAsteriscos = (n) =>{
     let x="";
     for(let i = 0 ; i<n ; i++){
         x= x + "*";
