@@ -21,7 +21,7 @@ boton.addEventListener(`click`, () => {
 
     cantidad++;
     contador.innerHTML=cantidad +"productos en lista"
-    input.value ="";
+    producto.value ="";
 });
 
 const eliminar = (boton) =>{
