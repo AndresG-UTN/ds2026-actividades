@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>amb libros - c03</title>
+</head>
+<body>
+    <header>
+        <h1>catalogo</h1>
+        <input type="text" id="filtroAutor" placeholder="ingrese autor">
+    </header>
+    
+    <main> 
+        <button id="filtrar">Filtrar</button>
+        <button id="mostrarDisponibles">Solo disponibles</button>
+        <button id="mostrarTodos">Ver todos</button>
+        
+        <ul id="listado"></ul>
+        <p id="stats"></p>
+    </main>
+
+    <hr> <section>
+        <h1>agregar libro</h1>
+        <input type="text" id="titulo" placeholder="ingrese el titulo del libro">
+        <input type="text" id="autor" placeholder="ingrese el autor del libro">
+        <input type="number" id="precio" placeholder="ingrese el precio del libro">
+        <input type="boolean" id="disponibles" placeholder="disponible: (true/false)">
+        <input type="text" id="genero" placeholder="ingrese el genero del libro (opcional)">
+        
+        <div style="margin-top: 10px;">
+            <button id="agregar">agregar</button>
+            <div id="errorFormulario"></div>
+        </div>
+    </section>
+
+    <script src="app.js"></script>
+</body>
+</html>
