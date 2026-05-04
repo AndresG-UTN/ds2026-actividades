@@ -5,7 +5,7 @@ const error = document.querySelector(`.error`)as HTMLElement;
 
 boton.addEventListener(`click`, () => {
 
-    let altura: string = String(input.value);
+    let altura: number = Number(input.value);
     if(altura<1){
         error.innerHTML=`<p>${"resultado invalido"}</p>`
     }
