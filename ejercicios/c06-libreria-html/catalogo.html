@@ -6,9 +6,8 @@
         <title>catalogo c06</title>
         <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet">
     </head>
-    <body>
+    <body style= "background-color: rgb(221, 230, 231);">
         <main>
-                    <main>
             <nav class="navbar bg-primery navbar-expand-lg bg-body-tertiary" data-bs-theme="dark">
             <div class="container-fluid">
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarTogglerDemo01" aria-controls="navbarTogglerDemo01" aria-expanded="false" aria-label="Toggle navigation">
@@ -16,23 +15,32 @@
                 </button>
                 <div class="collapse navbar-collapse" id="navbarTogglerDemo01">
                 <a class="navbar-brand" href="index.html"><h3>Libreria</h3></a>
-                <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-                    <li class="nav-item">
-                    <a class="nav-link" href="index.html"><h3>Inicio</h3></a>
-                    </li>
-                    <li class="nav-item">
-                    <a class="nav-link" href="contacto.html"><h3>Contacto</h3></a>
-                    </li>
-                </ul>
+                    <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                        <li class="nav-item">
+                            <a class="nav-link" href="index.html"><h3>Inicio</h3></a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="contacto.html"><h3>Contacto</h3></a>
+                        </li>
+                    </ul>
                 </div>
             </div>
             </nav>
+                <div class="container-fluid mt-4" style="background-color: rgb(221, 230, 231);">
+                    <form class="d-flex" role="search">
+                        <input id="buscar" class="form-control mb-2" type="search" style="background-color: rgba(169, 169, 169, 0.5);" placeholder="Tenias algo en mente?" aria-label="Search"/>
+                        <button id="BTNbuscar" class="btn btn-outline-success mx-2 mb-2" type="submit">¡encontralo!</button>
+                    </form>
+
+                    <p id="error" class="text-danger" style="display: none;"></p>
+                    <p id="cargando" class="text-info text-black" style="display: none;">Buscando libros...</p>
+                </div>
+
+                <div id="libros" class="d-flex flex-wrap justify-content-center gap-4 p-3 mb-5">
+                        
+                </div>
         </main>
+        <script src="js/data.js"></script>
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
     </body>
-
-        </main>
-        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
-    </body>
-
 </html>
