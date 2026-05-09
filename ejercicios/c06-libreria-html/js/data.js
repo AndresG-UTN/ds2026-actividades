@@ -42,7 +42,7 @@ btn.addEventListener(`click`, async (e) => {
                             <h5 class="card-title">${title}</h5>
                             <p class="card-text text-muted">${autor}</p>
                     
-                            <a href="#" class="btn btn-primary mt-auto">Ver más</a>
+                            <a href="libro.html" class="btn btn-primary mt-auto">Ver más</a>
                         </div>
                     </div>
             `;
