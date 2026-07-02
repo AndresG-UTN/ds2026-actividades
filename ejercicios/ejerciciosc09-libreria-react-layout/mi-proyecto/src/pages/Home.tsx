@@ -1,8 +1,10 @@
 import LibroCard from '../components/LCard'; 
 import { Container, Row, Col } from 'react-bootstrap';
 import type { Libro } from '../types/libro';
+import Layout from '../components/Layout/Layout'; // <--- Importamos el Layout
 
-const LISTA_DE_LIBROS: Libro[] = [ 
+const LISTA_DE_LIBROS: Libro[] = [
+  // ... (mantené tu lista de libros exactamente igual acá abajo)
   {
     id: 1,
     titulo: "Juego De Tronos 1",
@@ -43,13 +45,7 @@ const LISTA_DE_LIBROS: Libro[] = [
 
 function Home() {
   return (
-    <>
-      <nav className="navbar navbar-expand-lg bg-body-tertiary py-3" data-bs-theme="dark">
-        <Container fluid>
-          <span className="navbar-brand"><h3>Libreria</h3></span>
-        </Container>
-      </nav>
-
+    <Layout> {/* <--- Envolvemos toda la página aquí */}
       <div className="text-black text-center py-5" style={{ backgroundColor: 'rgb(221, 230, 231)' }}>
         <Container>
           <h1 className="display-4 fw-normal">Bienvenidos a la web de la lectura</h1>
@@ -76,7 +72,7 @@ function Home() {
           </div>
         </Container>
       </div>
-    </>
+    </Layout>
   );
 }
 
