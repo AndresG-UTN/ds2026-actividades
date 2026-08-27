@@ -1,0 +1,2 @@
+### Listar libros
+GET http://localhost:3000/libros
