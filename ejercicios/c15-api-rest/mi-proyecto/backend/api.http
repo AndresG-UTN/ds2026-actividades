@@ -1,0 +1,33 @@
+### 1. Listar todos los libros
+GET http://localhost:3000/api/libros
+
+### 2. Filtrar libros disponibles
+GET http://localhost:3000/api/libros?disponible=true
+
+### 3. Obtener un libro existente (200)
+GET http://localhost:3000/api/libros/1
+
+### 4. Obtener un libro inexistente (404)
+GET http://localhost:3000/api/libros/999
+
+### 5. Crear un nuevo libro (201)
+POST http://localhost:3000/api/libros
+Content-Type: application/json
+
+{
+  "titulo": "Rayuela",
+  "autor": "Julio Cortázar",
+  "disponible": true
+}
+
+### 6. Actualizar un libro (200)
+PUT http://localhost:3000/api/libros/1
+Content-Type: application/json
+
+{
+  "titulo": "El Aleph (Edición Definitiva)",
+  "disponible": false
+}
+
+### 7. Eliminar un libro (204)
+DELETE http://localhost:3000/api/libros/2
