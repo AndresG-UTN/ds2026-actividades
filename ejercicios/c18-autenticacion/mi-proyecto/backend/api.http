@@ -1,0 +1,200 @@
+@baseUrl = http://localhost:3000
+
+### ==============================================================================
+### 1. AUTENTICACIÓN (LOGIN Y CAPTURA DE TOKENS)
+### ==============================================================================
+
+### [1.1] Login como ADMIN (Emite y captura @tokenAdmin)
+# @name loginAdmin
+POST {{baseUrl}}/api/auth/login
+Content-Type: application/json
+
+{
+  "email": "admin@libreria.test",
+  "password": "Admin1234"
+}
+
+### Variable para reutilizar el token de ADMIN
+@tokenAdmin = {{loginAdmin.response.body.token}}
+
+### [1.2] Login como CLIENTE (Emite y captura @tokenCliente)
+# @name loginCliente
+POST {{baseUrl}}/api/auth/login
+Content-Type: application/json
+
+{
+  "email": "cliente@libreria.test",
+  "password": "Cliente1234"
+}
+
+### Variable para reutilizar el token de CLIENTE
+@tokenCliente = {{loginCliente.response.body.token}}
+
+
+### ==============================================================================
+### 2. CONSULTAS PÚBLICAS (Lectura sin token -> 200 OK)
+### ==============================================================================
+
+### 1. Listar todos los libros (incluye autores) -> 200 OK
+GET {{baseUrl}}/api/libros
+
+### 2. Filtrar libros disponibles -> 200 OK
+GET {{baseUrl}}/api/libros?disponible=true
+
+### 3. Obtener libro por ID válido -> 200 OK
+GET {{baseUrl}}/api/libros/1
+
+
+### ==============================================================================
+### 3. OPERACIONES DE ESCRITURA CON ADMIN (Éxito -> 201 / 200 / 204)
+### ==============================================================================
+
+### 4. Crear libro exitoso (conectado a George R. Martin autorId: 1) -> 201 Created
+POST {{baseUrl}}/api/libros
+Authorization: Bearer {{tokenAdmin}}
+Content-Type: application/json
+
+{
+  "titulo": "Choque de Reyes",
+  "precio": 27000,
+  "imagen": "https://images.cdn1.buscalibre.com/fit-in/360x360/portada-choque-de-reyes.jpg",
+  "disponible": true,
+  "autorId": 1
+}
+
+### 5. Actualizar libro existente -> 200 OK
+PUT {{baseUrl}}/api/libros/1
+Authorization: Bearer {{tokenAdmin}}
+Content-Type: application/json
+
+{
+  "precio": 26500
+}
+
+
+### ==============================================================================
+### 4. CASOS DE ERROR CONTROLADO (Clase 17 con token ADMIN)
+### ==============================================================================
+
+### 6. Error 400 Bad Request: ID no numérico en URL (validateParams)
+GET {{baseUrl}}/api/libros/abc
+
+### 7. Error 400 Bad Request: Body inválido con precio negativo (Zod)
+POST {{baseUrl}}/api/libros
+Authorization: Bearer {{tokenAdmin}}
+Content-Type: application/json
+
+{
+  "titulo": "Libro Erróneo",
+  "precio": -500,
+  "imagen": "https://link.jpg",
+  "autorId": 1
+}
+
+### 8. Error 404 Not Found: Modificar libro inexistente (P2025)
+PUT {{baseUrl}}/api/libros/9999
+Authorization: Bearer {{tokenAdmin}}
+Content-Type: application/json
+
+{
+  "titulo": "No existo"
+}
+
+### 9. Error 409 Conflict: Clave foránea inexistente (autorId inexistente - P2003)
+POST {{baseUrl}}/api/libros
+Authorization: Bearer {{tokenAdmin}}
+Content-Type: application/json
+
+{
+  "titulo": "Libro Fantasma",
+  "precio": 15000,
+  "imagen": "https://link.jpg",
+  "autorId": 9999
+}
+
+### 10. Eliminar un libro -> 204 No Content
+DELETE {{baseUrl}}/api/libros/3
+Authorization: Bearer {{tokenAdmin}}
+
+
+### ==============================================================================
+### 5. PRUEBAS DE SEGURIDAD, REGISTRO Y ROLES (Clase 18)
+### ==============================================================================
+
+### 11. Registro exitoso -> 201 Created (sin passwordHash)
+POST {{baseUrl}}/api/auth/registro
+Content-Type: application/json
+
+{
+  "nombre": "Ana Perez",
+  "email": "ana.perez@libreria.test",
+  "password": "Password123"
+}
+
+### 12. Registro email duplicado -> 409 Conflict (P2002)
+POST {{baseUrl}}/api/auth/registro
+Content-Type: application/json
+
+{
+  "nombre": "Ana Duplicada",
+  "email": "ana.perez@libreria.test",
+  "password": "Password123"
+}
+
+### 13. Registro con contraseña débil (< 8 caracteres) -> 400 Bad Request
+POST {{baseUrl}}/api/auth/registro
+Content-Type: application/json
+
+{
+  "nombre": "Error Pass",
+  "email": "error@libreria.test",
+  "password": "corta"
+}
+
+### 14. Login con usuario inexistente -> 401 Unauthorized
+POST {{baseUrl}}/api/auth/login
+Content-Type: application/json
+
+{
+  "email": "fantasma@libreria.test",
+  "password": "Password123"
+}
+
+### 15. Login con password errónea -> 401 Unauthorized
+POST {{baseUrl}}/api/auth/login
+Content-Type: application/json
+
+{
+  "email": "admin@libreria.test",
+  "password": "PasswordEquivocada"
+}
+
+### 16. GET /yo sin header Authorization -> 401 Unauthorized
+GET {{baseUrl}}/api/auth/yo
+
+### 17. GET /yo con token de CLIENTE -> 200 OK
+GET {{baseUrl}}/api/auth/yo
+Authorization: Bearer {{tokenCliente}}
+
+### 18. POST /libros sin token -> 401 Unauthorized
+POST {{baseUrl}}/api/libros
+Content-Type: application/json
+
+{
+  "titulo": "Libro Sin Token",
+  "precio": 12000,
+  "imagen": "https://link.jpg",
+  "autorId": 1
+}
+
+### 19. POST /libros con token CLIENTE -> 403 Forbidden
+POST {{baseUrl}}/api/libros
+Authorization: Bearer {{tokenCliente}}
+Content-Type: application/json
+
+{
+  "titulo": "Libro de Cliente",
+  "precio": 12000,
+  "imagen": "https://link.jpg",
+  "autorId": 1
+}
