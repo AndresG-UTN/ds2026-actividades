@@ -1,0 +1,32 @@
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model Autor {
+  id           Int     @id @default(autoincrement())
+  nombre       String  @unique
+  nacionalidad String
+  libros       Libro[]
+}
+
+model Libro {
+  id         Int         @id @default(autoincrement())
+  titulo     String
+  precio     Float
+  imagen     String
+  disponible Boolean     @default(true)
+  autorId    Int
+  autor      Autor       @relation(fields: [autorId], references: [id], onDelete: Restrict)
+  categorias Categoria[] // <-- ESTA LÍNEA ES LA QUE FALTA
+}
+
+model Categoria {
+  id     Int     @id @default(autoincrement())
+  nombre String  @unique
+  libros Libro[]
+}

@@ -1,0 +1,68 @@
+### 1. Listar todos los libros (incluye autores)
+GET http://localhost:3000/api/libros
+
+### 2. Filtrar por disponibles
+GET http://localhost:3000/api/libros?disponible=true
+
+### 3. Obtener libro por ID válido (ej: Juego De Tronos 1)
+GET http://localhost:3000/api/libros/1
+
+### 4. Crear libro exitoso (conectado a George R. Martin autorId: 1)
+POST http://localhost:3000/api/libros
+Content-Type: application/json
+
+{
+  "titulo": "Choque de Reyes",
+  "precio": 27000,
+  "imagen": "https://images.cdn1.buscalibre.com/fit-in/360x360/portada-choque-de-reyes.jpg",
+  "disponible": true,
+  "autorId": 1
+}
+
+### 5. Actualizar libro existente (PUT /:id)
+PUT http://localhost:3000/api/libros/1
+Content-Type: application/json
+
+{
+  "precio": 26500
+}
+
+### ======================================================
+### CASOS DE PRUEBA DE ERRORES (Evaluación Clase 17)
+### ======================================================
+
+### 6. Error 400 Bad Request: ID no numérico en URL (validateParams)
+GET http://localhost:3000/api/libros/abc
+
+### 7. Error 400 Bad Request: Body inválido con precio negativo (Zod)
+POST http://localhost:3000/api/libros
+Content-Type: application/json
+
+{
+  "titulo": "Libro Erróneo",
+  "precio": -500,
+  "imagen": "https://link.jpg",
+  "autorId": 1
+}
+
+### 8. Error 404 Not Found: Modificar libro inexistente (P2025)
+PUT http://localhost:3000/api/libros/9999
+Content-Type: application/json
+
+{
+  "titulo": "No existo"
+}
+
+### 9. Error 409 Conflict: Clave foránea inexistente (autorId inexistente - P2003)
+POST http://localhost:3000/api/libros
+Content-Type: application/json
+
+{
+  "titulo": "Libro Fantasma",
+  "precio": 15000,
+  "imagen": "https://link.jpg",
+  "autorId": 9999
+}
+
+### 10. Eliminar un libro
+DELETE http://localhost:3000/api/libros/3
