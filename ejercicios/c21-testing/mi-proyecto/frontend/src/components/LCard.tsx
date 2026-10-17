@@ -1,6 +1,6 @@
 import { Card } from "react-bootstrap";
 import { Link } from "react-router-dom";
-import { Autor } from "../types/libro";
+import type { Autor } from "../types/libro.ts";
 
 interface LibroCardProps {
   id: number;

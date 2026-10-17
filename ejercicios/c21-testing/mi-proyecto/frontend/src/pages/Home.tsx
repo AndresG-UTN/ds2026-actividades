@@ -4,30 +4,19 @@ import { Link } from 'react-router-dom';
 import Layout from '../components/Layout/Layout';
 import LibroCard from '../components/LCard';
 import type { Libro } from '../types/libro';
+import { apiFetch } from '../services/api';
 
 function Home() {
-
   const [libros, setLibros] = useState<Libro[]>([]);
   const [loading, setLoading] = useState<boolean>(true); 
   const [error, setError] = useState<string | null>(null); 
 
-
   useEffect(() => {
-  
     const fetchLibros = async () => {
       try {
-   
-        await new Promise(resolve => setTimeout(resolve, 800));
-        
-        const response = await fetch('/libros.json');
-        
-        if (!response.ok) {
-          throw new Error(`Error en la petición: ${response.statusText}`);
-        }
-        
-        const data = await response.json();
+        // Petición al backend con la ruta /api/libros que coincide con Express
+        const data = await apiFetch<Libro[]>("/api/libros");
         setLibros(data); 
-        
       } catch (err: any) {
         setError(err.message || "Ocurrió un error desconocido");
       } finally {

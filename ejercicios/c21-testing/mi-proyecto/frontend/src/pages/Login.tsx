@@ -2,7 +2,8 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Container, Card, Form, Button, Alert, Spinner } from "react-bootstrap";
 import Layout from "../components/Layout/Layout";
-import { loginSchema, LoginInput } from "../schemas/loginSchema";
+import { loginSchema } from "../schemas/loginSchema"; // <-- Importado como valor
+import type { LoginInput } from "../schemas/loginSchema"; // <-- Importado como tipo
 import { apiFetch } from "../services/api";
 import { guardarToken } from "../services/sesion";
 

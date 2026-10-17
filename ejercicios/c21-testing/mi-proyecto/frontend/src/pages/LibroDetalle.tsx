@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { useParams, Link } from "react-router-dom";
 import { Container, Row, Col, Card, Badge, Spinner, Alert, Button } from "react-bootstrap";
 import Layout from "../components/Layout/Layout";
-import { LibroDetalleData } from "../types/libro";
+import type { LibroDetalleData } from "../types/libro";
 import { apiFetch } from "../services/api";
 
 function LibroDetalle() {
@@ -14,7 +14,8 @@ function LibroDetalle() {
   useEffect(() => {
     if (!id) return;
 
-    apiFetch<LibroDetalleData>(`/libros/${id}`)
+    // Añadido el prefijo /api en la ruta del detalle
+    apiFetch<LibroDetalleData>(`/api/libros/${id}`)
       .then((datos) => {
         setLibro(datos);
         setError(null);

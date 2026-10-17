@@ -1,3 +1,4 @@
+import "dotenv/config"; // <-- CARGA LAS VARIABLES ANTES DE CUALQUIER OTRA COSA
 import type { SignOptions } from "jsonwebtoken";
 
 function obligatorio(nombre: string): string {

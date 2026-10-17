@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { Container, Row, Col, Spinner, Alert } from "react-bootstrap";
 import Layout from "../components/Layout/Layout";
 import LibroCard from "../components/LCard";
-import { Libro } from "../types/libro";
+import type { Libro } from "../types/libro";
 import { apiFetch } from "../services/api";
 
 function Catalogo() {
@@ -11,7 +11,8 @@ function Catalogo() {
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    apiFetch<Libro[]>("/libros")
+    // Añadido el prefijo /api para conectar con el backend correctamente
+    apiFetch<Libro[]>("/api/libros")
       .then((datos) => {
         setLibros(datos);
         setError(null);
