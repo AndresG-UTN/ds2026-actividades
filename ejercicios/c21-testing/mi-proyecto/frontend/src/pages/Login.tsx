@@ -72,6 +72,15 @@ function Login() {
       <Container className="py-5 d-flex justify-content-center">
         <Card style={{ maxWidth: "420px", width: "100%" }} className="shadow-sm border-0 p-3">
           <Card.Body>
+            {/* Botón para volver atrás */}
+            <Button
+              variant="link"
+              className="text-muted p-0 mb-3 text-decoration-none"
+              onClick={() => navigate(-1)}
+            >
+              ← Volver atrás
+            </Button>
+
             <h2 className="mb-4 text-center">Iniciar Sesión</h2>
 
             {errorBackend && (
