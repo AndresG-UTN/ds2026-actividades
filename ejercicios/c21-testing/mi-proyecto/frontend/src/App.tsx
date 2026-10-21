@@ -5,6 +5,9 @@ import Catalogo from "./pages/Catalogo";
 import LibroDetalle from "./pages/LibroDetalle";
 import LibroNuevo from "./pages/LibroNuevo";
 import Login from "./pages/Login";
+import Registro from "./pages/Registro";
+import SinPermiso from "./pages/SinPermiso";
+import PrivateRoute from "./components/PrivateRoute";
 
 const router = createBrowserRouter([
   {
@@ -20,12 +23,30 @@ const router = createBrowserRouter([
     element: <LibroDetalle />,
   },
   {
-    path: "/nuevo",
-    element: <LibroNuevo />,
-  },
-  {
     path: "/login",
     element: <Login />,
+  },
+  {
+    path: "/registro",
+    element: <Registro />,
+  },
+  {
+    path: "/sin-permiso",
+    element: <SinPermiso />,
+  },
+  // Ruta protegida por rol ADMIN utilizando Layout Route de React Router
+  {
+    element: <PrivateRoute rolRequerido="ADMIN" />,
+    children: [
+      {
+        path: "/nuevo",
+        element: <LibroNuevo />,
+      },
+      {
+        path: "/libros/nuevo",
+        element: <LibroNuevo />,
+      },
+    ],
   },
 ]);
 
