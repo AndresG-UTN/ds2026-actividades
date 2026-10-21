@@ -14,8 +14,8 @@ function Home() {
   useEffect(() => {
     const fetchLibros = async () => {
       try {
-        // Petición al backend con la ruta /api/libros que coincide con Express
-        const data = await apiFetch<Libro[]>("/api/libros");
+        // Petición al backend con la ruta limpia o ajustada al helper
+        const data = await apiFetch<Libro[]>("/libros");
         setLibros(data); 
       } catch (err: any) {
         setError(err.message || "Ocurrió un error desconocido");
@@ -33,6 +33,16 @@ function Home() {
         <Container>
           <h1 className="display-4 fw-normal">Bienvenidos a la web de la lectura</h1>
           <p className="lead text-muted">Aca tenemos de todo, somos la nueva alejandria</p>
+          
+          {/* Botones de Autenticación / Registro */}
+          <div className="mt-4 mb-4 d-flex justify-content-center gap-3">
+            <Link to="/login" className="btn btn-outline-dark px-4 shadow-sm">
+              Iniciar Sesión
+            </Link>
+            <Link to="/registro" className="btn btn-dark px-4 shadow-sm">
+              Registrarse
+            </Link>
+          </div>
           
           <h2 className="mt-5 mb-4 text-dark">Lecturas destacadas</h2>
 
