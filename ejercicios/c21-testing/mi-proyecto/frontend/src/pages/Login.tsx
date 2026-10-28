@@ -52,7 +52,7 @@ function Login() {
     setCargando(true);
 
     try {
-      const res = await apiFetch<RespuestaLogin>("/auth/login", {
+      const res = await apiFetch<RespuestaLogin>("/api/auth/login", {
         method: "POST",
         body: JSON.stringify(resultado.data),
       });

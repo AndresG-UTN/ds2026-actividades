@@ -21,7 +21,7 @@ export default function Registro() {
     setCargando(true);
 
     try {
-      await apiFetch("/auth/registro", {
+      await apiFetch("/api/auth/registro", {
         method: "POST",
         body: JSON.stringify(form),
       });
