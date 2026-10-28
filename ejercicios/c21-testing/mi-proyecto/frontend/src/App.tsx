@@ -7,6 +7,7 @@ import LibroNuevo from "./pages/LibroNuevo";
 import Login from "./pages/Login";
 import Registro from "./pages/Registro";
 import SinPermiso from "./pages/SinPermiso";
+import Perfil from "./pages/Perfil";
 import PrivateRoute from "./components/PrivateRoute";
 
 const router = createBrowserRouter([
@@ -33,6 +34,16 @@ const router = createBrowserRouter([
   {
     path: "/sin-permiso",
     element: <SinPermiso />,
+  },
+  // Ruta protegida para usuarios autenticados
+  {
+    element: <PrivateRoute />,
+    children: [
+      {
+        path: "/perfil",
+        element: <Perfil />,
+      },
+    ],
   },
   // Ruta protegida por rol ADMIN utilizando Layout Route de React Router
   {

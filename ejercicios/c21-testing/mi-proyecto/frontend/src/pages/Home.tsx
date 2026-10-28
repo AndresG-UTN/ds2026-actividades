@@ -29,12 +29,12 @@ function Home() {
 
   return (
     <Layout>
-      <div className="text-black text-center py-5" style={{ backgroundColor: 'rgb(221, 230, 231)', height: '100%' }}>
+      <div className="text-black text-center py-4" style={{ backgroundColor: 'rgb(221, 230, 231)' }}>
         <Container>
           <h1 className="display-4 fw-normal">Bienvenidos a la web de la lectura</h1>
           <p className="lead text-muted">Aca tenemos de todo, somos la nueva alejandria</p>
           
-          <h2 className="mt-5 mb-4 text-dark">Lecturas destacadas</h2>
+          <h2 className="mt-4 mb-4 text-dark">Lecturas destacadas</h2>
 
           {loading && (
             <div className="my-5">
@@ -70,7 +70,7 @@ function Home() {
             <p className="text-muted my-5">No hay libros disponibles en este momento.</p>
           )}
 
-          <div className="text-center mt-5">
+          <div className="text-center mt-4">
             <Link to="/catalogo" className="btn btn-primary btn-lg px-4 shadow-sm">
               Ver Catálogo Completo
             </Link>

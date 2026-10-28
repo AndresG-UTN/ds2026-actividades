@@ -1,7 +1,9 @@
 import { Container, Navbar, Nav } from 'react-bootstrap';
-import { Link, NavLink } from 'react-router-dom'; 
+import { Link, NavLink, useNavigate } from 'react-router-dom'; 
 
 function Header() {
+  const navigate = useNavigate();
+
   return (
     <Navbar bg="dark" variant="dark" expand="lg" className="py-3">
       <Container fluid>
@@ -16,13 +18,27 @@ function Header() {
             <NavLink to="/catalogo" className="nav-link">Catálogo</NavLink>
             <NavLink to="/nuevo" className="nav-link">Agregar Libro</NavLink> {/* <-- NUEVO LINK */}
             
-            {/* Botones integrados de Iniciar Sesión y Registrarse */}
-            <Nav.Link as={Link} to="/login" className="btn btn-outline-light btn-sm ms-lg-2 text-light">
+            {/* Botón para volver atrás */}
+            <button 
+              onClick={() => navigate(-1)} 
+              className="btn btn-outline-secondary btn-sm text-light border-0"
+            >
+              ← Volver
+            </button>
+
+            {/* Botones integrados de Iniciar Sesión y Registrarse con navegación */}
+            <button 
+              onClick={() => navigate('/login')} 
+              className="btn btn-outline-light btn-sm ms-lg-2 text-light"
+            >
               Iniciar Sesión
-            </Nav.Link>
-            <Nav.Link as={Link} to="/registro" className="btn btn-primary btn-sm text-white">
+            </button>
+            <button 
+              onClick={() => navigate('/registro')} 
+              className="btn btn-primary btn-sm text-white"
+            >
               Registrarse
-            </Nav.Link>
+            </button>
           </Nav>
         </Navbar.Collapse>
       </Container>
