@@ -4,21 +4,11 @@ import { Container, Card, Form, Button, Alert, Spinner } from "react-bootstrap";
 import Layout from "../components/Layout/Layout";
 import { loginSchema } from "../schemas/loginSchema";
 import type { LoginInput } from "../schemas/loginSchema";
-import { apiFetch } from "../services/api";
-import { guardarToken } from "../services/sesion";
-
-interface RespuestaLogin {
-  token: string;
-  usuario: {
-    id: number;
-    email: string;
-    nombre: string;
-    rol: "ADMIN" | "CLIENTE";
-  };
-}
+import { useAuth } from "../context/AuthContext";
 
 function Login() {
   const navigate = useNavigate();
+  const { login } = useAuth();
   const [form, setForm] = useState<LoginInput>({ email: "", password: "" });
   const [errores, setErrores] = useState<Record<string, string>>({});
   const [errorBackend, setErrorBackend] = useState<string | null>(null);
@@ -52,12 +42,7 @@ function Login() {
     setCargando(true);
 
     try {
-      const res = await apiFetch<RespuestaLogin>("/api/auth/login", {
-        method: "POST",
-        body: JSON.stringify(resultado.data),
-      });
-
-      guardarToken(res.token);
+      await login(resultado.data);
       navigate("/catalogo");
     } catch (err: any) {
       setErrorBackend(err.message || "Error al iniciar sesión");

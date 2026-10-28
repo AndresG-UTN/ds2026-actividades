@@ -4,7 +4,7 @@ import type { Usuario, Rol, Credenciales, Sesion } from "../types/sesionType";
 import { guardarToken, obtenerToken, borrarToken } from "../services/sesion";
 import { apiFetch, EVENTO_SESION_EXPIRADA } from "../services/api";
 
-interface AuthContextType {
+export interface AuthContextType {
   usuario: Usuario | null;
   cargando: boolean;
   estaAutenticado: boolean;
@@ -13,7 +13,16 @@ interface AuthContextType {
   logout: () => void;
 }
 
-const AuthContext = createContext<AuthContextType | null>(null);
+const defaultAuthContext: AuthContextType = {
+  usuario: null,
+  cargando: false,
+  estaAutenticado: false,
+  tieneRol: () => false,
+  login: async () => {},
+  logout: () => {},
+};
+
+const AuthContext = createContext<AuthContextType>(defaultAuthContext);
 
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [usuario, setUsuario] = useState<Usuario | null>(null);
@@ -25,7 +34,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     const token = obtenerToken();
     if (!token) return;
 
-    apiFetch<Usuario>("/auth/yo")
+    apiFetch<Usuario>("/api/auth/yo")
       .then((user) => {
         setUsuario(user);
       })
@@ -52,7 +61,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   }, []);
 
   const login = async (credenciales: Credenciales): Promise<void> => {
-    const sesion = await apiFetch<Sesion>("/auth/login", {
+    const sesion = await apiFetch<Sesion>("/api/auth/login", {
       method: "POST",
       body: JSON.stringify(credenciales),
     });
@@ -90,8 +99,5 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
 export function useAuth(): AuthContextType {
   const context = useContext(AuthContext);
-  if (!context) {
-    throw new Error("useAuth debe usarse dentro de un AuthProvider");
-  }
-  return context;
+  return context || defaultAuthContext;
 }

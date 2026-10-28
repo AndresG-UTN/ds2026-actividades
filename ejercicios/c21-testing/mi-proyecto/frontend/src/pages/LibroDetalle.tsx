@@ -4,17 +4,20 @@ import { Container, Row, Col, Card, Badge, Spinner, Alert, Button } from "react-
 import Layout from "../components/Layout/Layout";
 import type { LibroDetalleData } from "../types/libro";
 import { apiFetch } from "../services/api";
+import { useCart } from "../context/CartContext";
 
 function LibroDetalle() {
   const { id } = useParams<{ id: string }>();
   const [libro, setLibro] = useState<LibroDetalleData | null>(null);
   const [cargando, setCargando] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
+  const [agregadoAlCarrito, setAgregadoAlCarrito] = useState<boolean>(false);
+
+  const { agregarAlCarrito } = useCart();
 
   useEffect(() => {
     if (!id) return;
 
-    // Añadido el prefijo /api en la ruta del detalle
     apiFetch<LibroDetalleData>(`/api/libros/${id}`)
       .then((datos) => {
         setLibro(datos);
@@ -28,12 +31,29 @@ function LibroDetalle() {
       });
   }, [id]);
 
+  const handleComprar = () => {
+    if (!libro || !libro.disponible) return;
+    agregarAlCarrito({
+      id: libro.id,
+      titulo: libro.titulo,
+      precio: libro.precio,
+      imagen: libro.imagen,
+      autor: typeof libro.autor === "object" ? libro.autor.nombre : libro.autor,
+    });
+    setAgregadoAlCarrito(true);
+  };
+
   return (
     <Layout>
       <Container className="py-5">
-        <Link to="/catalogo" className="btn btn-outline-secondary mb-4">
-          &larr; Volver al catálogo
-        </Link>
+        <div className="d-flex justify-content-between align-items-center mb-4">
+          <Link to="/catalogo" className="btn btn-outline-secondary">
+            &larr; Volver al catálogo
+          </Link>
+          <Link to="/carrito" className="btn btn-outline-warning">
+            🛒 Ver Carrito
+          </Link>
+        </div>
 
         {cargando && (
           <div className="text-center py-5">
@@ -46,6 +66,21 @@ function LibroDetalle() {
         {error && (
           <Alert variant="danger">
             Error al cargar el detalle: {error}
+          </Alert>
+        )}
+
+        {agregadoAlCarrito && (
+          <Alert variant="success" dismissible onClose={() => setAgregadoAlCarrito(false)} className="shadow-sm mb-4">
+            <Alert.Heading className="fs-5">¡Libro agregado al carrito con éxito!</Alert.Heading>
+            <p className="mb-2">"{libro?.titulo}" ya está listo en tu carrito de compras.</p>
+            <div className="d-flex gap-2">
+              <Link to="/carrito" className="btn btn-success btn-sm">
+                Ir al Carrito y Pagar
+              </Link>
+              <Button variant="outline-secondary" size="sm" onClick={() => setAgregadoAlCarrito(false)}>
+                Seguir explorando
+              </Button>
+            </div>
           </Alert>
         )}
 
@@ -84,8 +119,14 @@ function LibroDetalle() {
 
                   <h3 className="text-primary my-3">${libro.precio.toLocaleString()}</h3>
 
-                  <div className="mt-auto pt-3 border-top">
-                    <Button variant="primary" size="lg" disabled={!libro.disponible}>
+                  <div className="mt-auto pt-3 border-top d-flex gap-3 align-items-center">
+                    <Button 
+                      variant="primary" 
+                      size="lg" 
+                      disabled={!libro.disponible}
+                      onClick={handleComprar}
+                      className="px-4 fw-semibold"
+                    >
                       {libro.disponible ? "Comprar libro" : "No disponible"}
                     </Button>
                   </div>

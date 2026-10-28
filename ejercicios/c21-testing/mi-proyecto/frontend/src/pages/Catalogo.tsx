@@ -53,6 +53,7 @@ function Catalogo() {
                   titulo={libro.titulo}
                   autor={libro.autor}
                   imagen={libro.imagen}
+                  precio={libro.precio}
                 />
               </Col>
             ))}

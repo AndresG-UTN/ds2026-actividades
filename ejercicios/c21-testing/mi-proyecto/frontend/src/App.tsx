@@ -1,5 +1,6 @@
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import { AuthProvider } from "./context/AuthContext";
+import { CartProvider } from "./context/CartContext";
 import Home from "./pages/Home";
 import Catalogo from "./pages/Catalogo";
 import LibroDetalle from "./pages/LibroDetalle";
@@ -8,6 +9,7 @@ import Login from "./pages/Login";
 import Registro from "./pages/Registro";
 import SinPermiso from "./pages/SinPermiso";
 import Perfil from "./pages/Perfil";
+import Carrito from "./pages/Carrito";
 import PrivateRoute from "./components/PrivateRoute";
 
 const router = createBrowserRouter([
@@ -22,6 +24,10 @@ const router = createBrowserRouter([
   {
     path: "/libros/:id",
     element: <LibroDetalle />,
+  },
+  {
+    path: "/carrito",
+    element: <Carrito />,
   },
   {
     path: "/login",
@@ -64,7 +70,9 @@ const router = createBrowserRouter([
 function App() {
   return (
     <AuthProvider>
-      <RouterProvider router={router} />
+      <CartProvider>
+        <RouterProvider router={router} />
+      </CartProvider>
     </AuthProvider>
   );
 }
