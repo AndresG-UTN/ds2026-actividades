@@ -29,7 +29,7 @@ function Home() {
 
   return (
     <Layout>
-      <div className="text-black text-center py-5" style={{ backgroundColor: 'rgb(221, 230, 231)', minHeight: '100vh' }}>
+      <div className="text-black text-center py-5" style={{ backgroundColor: 'rgb(221, 230, 231)', height: '100%' }}>
         <Container>
           <h1 className="display-4 fw-normal">Bienvenidos a la web de la lectura</h1>
           <p className="lead text-muted">Aca tenemos de todo, somos la nueva alejandria</p>
