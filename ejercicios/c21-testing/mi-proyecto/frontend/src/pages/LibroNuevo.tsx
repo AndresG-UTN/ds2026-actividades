@@ -25,7 +25,7 @@ interface FormCrearLibro {
 }
 
 function LibroNuevo() {
-  const [tabActiva, setTabActiva] = useState<"agregar" | "eliminar">("agregar");
+  const [tabActiva, setTabActiva] = useState<"agregar" | "stock" | "eliminar">("agregar");
 
   // Estado para el formulario de agregar libro
   const [formData, setFormData] = useState<FormCrearLibro>({
@@ -39,32 +39,35 @@ function LibroNuevo() {
   const [mensajeExito, setMensajeExito] = useState<string | null>(null);
   const [errorBackend, setErrorBackend] = useState<string | null>(null);
 
-  // Estado para la lista de libros a eliminar
+  // Estado para la lista de libros (usado en sumar stock y eliminar)
   const [libros, setLibros] = useState<Libro[]>([]);
   const [cargandoLibros, setCargandoLibros] = useState<boolean>(false);
-  const [errorEliminar, setErrorEliminar] = useState<string | null>(null);
-  const [mensajeEliminado, setMensajeEliminado] = useState<string | null>(null);
+  const [errorOperacion, setErrorOperacion] = useState<string | null>(null);
+  const [mensajeOperacion, setMensajeOperacion] = useState<string | null>(null);
+
+  // Estado para modificar stock
+  const [actualizandoStockId, setActualizandoStockId] = useState<number | null>(null);
 
   // Modal de confirmación para eliminar
   const [libroAEliminar, setLibroAEliminar] = useState<Libro | null>(null);
   const [eliminando, setEliminando] = useState<boolean>(false);
 
-  // Cargar lista de libros cuando se selecciona la pestaña 'eliminar'
+  // Cargar lista de libros cuando se selecciona 'stock' o 'eliminar'
   const cargarLibros = async () => {
     setCargandoLibros(true);
-    setErrorEliminar(null);
+    setErrorOperacion(null);
     try {
       const data = await apiFetch<Libro[]>("/api/libros");
       setLibros(data);
     } catch (err: any) {
-      setErrorEliminar(err.message || "Error al cargar los libros");
+      setErrorOperacion(err.message || "Error al cargar los libros");
     } finally {
       setCargandoLibros(false);
     }
   };
 
   useEffect(() => {
-    if (tabActiva === "eliminar") {
+    if (tabActiva === "stock" || tabActiva === "eliminar") {
       cargarLibros();
     }
   }, [tabActiva]);
@@ -112,12 +115,40 @@ function LibroNuevo() {
     }
   };
 
+  // Función para sumar / cambiar stock de un libro preexistente
+  const handleCambiarStock = async (libro: Libro, nuevoEstado: boolean) => {
+    setActualizandoStockId(libro.id);
+    setErrorOperacion(null);
+    setMensajeOperacion(null);
+
+    try {
+      await apiFetch(`/api/libros/${libro.id}`, {
+        method: "PUT",
+        body: JSON.stringify({ disponible: nuevoEstado }),
+      });
+
+      setLibros((prev) =>
+        prev.map((l) => (l.id === libro.id ? { ...l, disponible: nuevoEstado } : l))
+      );
+
+      setMensajeOperacion(
+        nuevoEstado
+          ? `¡Stock sumado con éxito! "${libro.titulo}" ahora está disponible para la compra.`
+          : `"${libro.titulo}" marcado como sin stock (no disponible para la compra).`
+      );
+    } catch (err: any) {
+      setErrorOperacion(err.message || "Error al actualizar el stock del libro");
+    } finally {
+      setActualizandoStockId(null);
+    }
+  };
+
   const handleConfirmarEliminar = async () => {
     if (!libroAEliminar) return;
 
     setEliminando(true);
-    setErrorEliminar(null);
-    setMensajeEliminado(null);
+    setErrorOperacion(null);
+    setMensajeOperacion(null);
 
     try {
       await apiFetch(`/api/libros/${libroAEliminar.id}`, {
@@ -125,10 +156,10 @@ function LibroNuevo() {
       });
 
       setLibros((prev) => prev.filter((l) => l.id !== libroAEliminar.id));
-      setMensajeEliminado(`El libro "${libroAEliminar.titulo}" ha sido eliminado exitosamente.`);
+      setMensajeOperacion(`El libro "${libroAEliminar.titulo}" ha sido eliminado exitosamente.`);
       setLibroAEliminar(null);
     } catch (err: any) {
-      setErrorEliminar(err.message || "Error al eliminar el libro");
+      setErrorOperacion(err.message || "Error al eliminar el libro");
     } finally {
       setEliminando(false);
     }
@@ -144,8 +175,8 @@ function LibroNuevo() {
           </Link>
         </div>
 
-        {/* Selector de pestañas: Agregar Libro vs Eliminar Libro */}
-        <Nav variant="pills" className="nav-fill mb-4 p-1 bg-light rounded border shadow-sm">
+        {/* Selector de pestañas: Agregar Libro vs Sumar Stock vs Eliminar Libro */}
+        <Nav variant="pills" className="nav-fill mb-4 p-1 bg-white rounded border shadow-sm">
           <Nav.Item>
             <Nav.Link
               active={tabActiva === "agregar"}
@@ -153,6 +184,7 @@ function LibroNuevo() {
                 setTabActiva("agregar");
                 setMensajeExito(null);
                 setErrorBackend(null);
+                setMensajeOperacion(null);
               }}
               style={{ cursor: "pointer" }}
               className="fw-semibold"
@@ -162,11 +194,25 @@ function LibroNuevo() {
           </Nav.Item>
           <Nav.Item>
             <Nav.Link
+              active={tabActiva === "stock"}
+              onClick={() => {
+                setTabActiva("stock");
+                setMensajeOperacion(null);
+                setErrorOperacion(null);
+              }}
+              style={{ cursor: "pointer" }}
+              className="fw-semibold text-primary"
+            >
+              📦 Sumar Stock
+            </Nav.Link>
+          </Nav.Item>
+          <Nav.Item>
+            <Nav.Link
               active={tabActiva === "eliminar"}
               onClick={() => {
                 setTabActiva("eliminar");
-                setMensajeEliminado(null);
-                setErrorEliminar(null);
+                setMensajeOperacion(null);
+                setErrorOperacion(null);
               }}
               style={{ cursor: "pointer" }}
               className="fw-semibold text-danger"
@@ -254,7 +300,7 @@ function LibroNuevo() {
                 <Form.Check
                   type="checkbox"
                   name="disponible"
-                  label="Disponible para la venta"
+                  label="Disponible para la venta (con stock)"
                   checked={formData.disponible}
                   onChange={handleChange}
                 />
@@ -286,6 +332,126 @@ function LibroNuevo() {
           </Card>
         )}
 
+        {/* PESTAÑA: SUMAR STOCK */}
+        {tabActiva === "stock" && (
+          <Card className="p-4 shadow-sm bg-white rounded border">
+            <div className="d-flex justify-content-between align-items-center mb-3">
+              <div>
+                <h4 className="mb-1 text-primary">Sumar y Gestionar Stock</h4>
+                <p className="text-muted small mb-0">
+                  Activá o reponé el stock de libros preexistentes para permitir que los usuarios puedan comprarlos.
+                </p>
+              </div>
+              <Button
+                variant="outline-secondary"
+                size="sm"
+                onClick={cargarLibros}
+                disabled={cargandoLibros}
+              >
+                🔄 Actualizar
+              </Button>
+            </div>
+
+            {mensajeOperacion && (
+              <Alert variant="success" dismissible onClose={() => setMensajeOperacion(null)}>
+                {mensajeOperacion}
+              </Alert>
+            )}
+
+            {errorOperacion && (
+              <Alert variant="danger" dismissible onClose={() => setErrorOperacion(null)}>
+                {errorOperacion}
+              </Alert>
+            )}
+
+            {cargandoLibros ? (
+              <div className="text-center py-5">
+                <Spinner animation="border" variant="primary" />
+                <p className="mt-2 text-muted">Cargando catálogo...</p>
+              </div>
+            ) : libros.length === 0 ? (
+              <p className="text-muted text-center py-4">No hay libros registrados.</p>
+            ) : (
+              <div className="table-responsive">
+                <Table hover className="align-middle mb-0">
+                  <thead className="table-light">
+                    <tr>
+                      <th>Portada</th>
+                      <th>Título</th>
+                      <th>Precio</th>
+                      <th>Estado de Stock</th>
+                      <th className="text-end">Acción</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {libros.map((libro) => {
+                      const actualizando = actualizandoStockId === libro.id;
+                      return (
+                        <tr key={libro.id}>
+                          <td style={{ width: "60px" }}>
+                            <img
+                              src={libro.imagen}
+                              alt={libro.titulo}
+                              style={{ width: "45px", height: "60px", objectFit: "cover" }}
+                              className="rounded shadow-sm"
+                            />
+                          </td>
+                          <td>
+                            <div className="fw-semibold text-dark">{libro.titulo}</div>
+                            <small className="text-muted">
+                              {typeof libro.autor === "object" ? libro.autor.nombre : libro.autor}
+                            </small>
+                          </td>
+                          <td className="fw-semibold">${libro.precio.toLocaleString()}</td>
+                          <td>
+                            {libro.disponible ? (
+                              <Badge bg="success" className="px-2 py-1">
+                                ✓ Disponible (Con stock)
+                              </Badge>
+                            ) : (
+                              <Badge bg="danger" className="px-2 py-1">
+                                ✕ Agotado (Sin stock)
+                              </Badge>
+                            )}
+                          </td>
+                          <td className="text-end">
+                            {libro.disponible ? (
+                              <Button
+                                variant="outline-warning"
+                                size="sm"
+                                disabled={actualizando}
+                                onClick={() => handleCambiarStock(libro, false)}
+                                title="Marcar como agotado"
+                              >
+                                {actualizando ? <Spinner animation="border" size="sm" /> : "Agotar Stock"}
+                              </Button>
+                            ) : (
+                              <Button
+                                variant="success"
+                                size="sm"
+                                disabled={actualizando}
+                                onClick={() => handleCambiarStock(libro, true)}
+                                className="fw-semibold"
+                                title="Habilitar stock para la venta"
+                              >
+                                {actualizando ? (
+                                  <Spinner animation="border" size="sm" />
+                                ) : (
+                                  "➕ Sumar Stock"
+                                )}
+                              </Button>
+                            )}
+                          </td>
+                        </tr>
+                      );
+                    })}
+                  </tbody>
+                </Table>
+              </div>
+            )}
+          </Card>
+        )}
+
         {/* PESTAÑA: ELIMINAR LIBRO */}
         {tabActiva === "eliminar" && (
           <Card className="p-4 shadow-sm bg-white rounded border">
@@ -306,15 +472,15 @@ function LibroNuevo() {
               </Button>
             </div>
 
-            {mensajeEliminado && (
-              <Alert variant="success" dismissible onClose={() => setMensajeEliminado(null)}>
-                {mensajeEliminado}
+            {mensajeOperacion && (
+              <Alert variant="success" dismissible onClose={() => setMensajeOperacion(null)}>
+                {mensajeOperacion}
               </Alert>
             )}
 
-            {errorEliminar && (
-              <Alert variant="danger" dismissible onClose={() => setErrorEliminar(null)}>
-                {errorEliminar}
+            {errorOperacion && (
+              <Alert variant="danger" dismissible onClose={() => setErrorOperacion(null)}>
+                {errorOperacion}
               </Alert>
             )}
 

@@ -69,6 +69,7 @@ function Home() {
                     autor={libro.autor}
                     imagen={libro.imagen}
                     precio={libro.precio}
+                    disponible={libro.disponible}
                   />
                 </Col>
               ))}

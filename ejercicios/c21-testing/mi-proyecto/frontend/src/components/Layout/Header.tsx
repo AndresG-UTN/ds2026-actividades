@@ -1,12 +1,15 @@
+import { useState } from 'react';
 import { Container, Navbar, Nav, Badge } from 'react-bootstrap';
-import { Link, NavLink, useNavigate } from 'react-router-dom'; 
+import { Link, NavLink, useNavigate, useLocation } from 'react-router-dom'; 
 import { useAuth } from '../../context/AuthContext';
 import { useCart } from '../../context/CartContext';
 
 function Header() {
   const navigate = useNavigate();
+  const location = useLocation();
   const { estaAutenticado, usuario, logout, tieneRol } = useAuth();
   const { totalItems } = useCart();
+  const [cartHover, setCartHover] = useState<boolean>(false);
 
   const handleLogout = () => {
     logout();
@@ -29,29 +32,45 @@ function Header() {
               <NavLink to="/nuevo" className="nav-link">Agregar Libro</NavLink>
             )}
 
-            {/* Acceso al Carrito de Compras con indicador numérico */}
+            {/* Acceso al Carrito de Compras en azul con cambio de color al pasar el cursor (hover) */}
             <NavLink 
               to="/carrito" 
-              className="btn btn-outline-warning btn-sm d-flex align-items-center gap-1 text-warning me-lg-2"
+              onMouseEnter={() => setCartHover(true)}
+              onMouseLeave={() => setCartHover(false)}
+              className="btn btn-outline-primary btn-sm d-flex align-items-center gap-1 me-lg-2"
+              style={{
+                backgroundColor: cartHover ? '#0d6efd' : 'transparent',
+                color: cartHover ? '#ffffff' : '#0d6efd',
+                borderColor: '#0d6efd',
+                transition: 'all 0.2s ease-in-out',
+                fontWeight: 500,
+              }}
               title="Ver Carrito de Compras"
             >
               <span>🛒</span>
               <span>Carrito</span>
               {totalItems > 0 && (
-                <Badge bg="warning" text="dark" pill className="ms-1">
+                <Badge 
+                  bg={cartHover ? 'light' : 'primary'} 
+                  text={cartHover ? 'primary' : 'white'} 
+                  pill 
+                  className="ms-1"
+                >
                   {totalItems}
                 </Badge>
               )}
             </NavLink>
             
-            {/* Botón para volver atrás */}
-            <button 
-              onClick={() => navigate(-1)} 
-              className="btn btn-outline-secondary btn-sm text-light border-0"
-              title="Volver atrás"
-            >
-              ← Volver
-            </button>
+            {/* Botón para volver al Inicio (oculto en la pantalla de inicio '/') */}
+            {location.pathname !== '/' && (
+              <button 
+                onClick={() => navigate('/')} 
+                className="btn btn-outline-secondary btn-sm text-light border-0"
+                title="Volver al Inicio"
+              >
+                ← Volver al Inicio
+              </button>
+            )}
 
             {/* Botones según el estado de sesión */}
             {estaAutenticado ? (

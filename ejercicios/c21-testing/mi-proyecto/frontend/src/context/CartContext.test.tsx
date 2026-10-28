@@ -26,7 +26,8 @@ describe("CartContext — Carrito de compras", () => {
     };
 
     act(() => {
-      result.current.agregarAlCarrito(libro);
+      const agregado = result.current.agregarAlCarrito(libro);
+      expect(agregado).toBe(true);
     });
 
     expect(result.current.items).toHaveLength(1);
@@ -42,6 +43,26 @@ describe("CartContext — Carrito de compras", () => {
     expect(result.current.items[0].cantidad).toBe(3);
     expect(result.current.totalItems).toBe(3);
     expect(result.current.totalPrecio).toBe(45000);
+  });
+
+  it("rechaza agregar libros sin stock (disponible === false)", () => {
+    const { result } = renderHook(() => useCart(), { wrapper: CartProvider });
+
+    const libroSinStock = {
+      id: 99,
+      titulo: "Libro Agotado",
+      precio: 10000,
+      imagen: "https://ejemplo.com/agotado.jpg",
+      disponible: false,
+    };
+
+    act(() => {
+      const agregado = result.current.agregarAlCarrito(libroSinStock);
+      expect(agregado).toBe(false);
+    });
+
+    expect(result.current.items).toHaveLength(0);
+    expect(result.current.totalItems).toBe(0);
   });
 
   it("permite actualizar cantidad y eliminar libro del carrito", () => {
@@ -90,4 +111,3 @@ describe("CartContext — Carrito de compras", () => {
     expect(result.current.totalPrecio).toBe(0);
   });
 });
-

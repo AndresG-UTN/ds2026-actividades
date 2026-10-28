@@ -8,13 +8,17 @@ export interface CartItem {
   imagen: string;
   autor?: string;
   cantidad: number;
+  disponible?: boolean;
 }
 
 export interface CartContextType {
   items: CartItem[];
   totalItems: number;
   totalPrecio: number;
-  agregarAlCarrito: (libro: { id: number; titulo: string; precio: number; imagen: string; autor?: string }, cantidad?: number) => void;
+  agregarAlCarrito: (
+    libro: { id: number; titulo: string; precio: number; imagen: string; autor?: string; disponible?: boolean },
+    cantidad?: number
+  ) => boolean;
   eliminarDelCarrito: (id: number) => void;
   actualizarCantidad: (id: number, cantidad: number) => void;
   vaciarCarrito: () => void;
@@ -26,7 +30,7 @@ const defaultCartContext: CartContextType = {
   items: [],
   totalItems: 0,
   totalPrecio: 0,
-  agregarAlCarrito: () => {},
+  agregarAlCarrito: () => false,
   eliminarDelCarrito: () => {},
   actualizarCantidad: () => {},
   vaciarCarrito: () => {},
@@ -53,9 +57,14 @@ export function CartProvider({ children }: { children: ReactNode }) {
   }, [items]);
 
   const agregarAlCarrito = (
-    libro: { id: number; titulo: string; precio: number; imagen: string; autor?: string },
+    libro: { id: number; titulo: string; precio: number; imagen: string; autor?: string; disponible?: boolean },
     cantidad: number = 1
-  ) => {
+  ): boolean => {
+    // Si el libro no está disponible (sin stock), no permitir agregarlo al carrito
+    if (libro.disponible === false) {
+      return false;
+    }
+
     setItems((prev) => {
       const existe = prev.find((item) => item.id === libro.id);
       if (existe) {
@@ -74,9 +83,12 @@ export function CartProvider({ children }: { children: ReactNode }) {
           imagen: libro.imagen,
           autor: libro.autor,
           cantidad,
+          disponible: libro.disponible ?? true,
         },
       ];
     });
+
+    return true;
   };
 
   const eliminarDelCarrito = (id: number) => {
@@ -121,4 +133,3 @@ export function useCart(): CartContextType {
   const context = useContext(CartContext);
   return context || defaultCartContext;
 }
-
