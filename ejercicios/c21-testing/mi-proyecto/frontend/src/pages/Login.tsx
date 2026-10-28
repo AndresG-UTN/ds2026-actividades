@@ -2,8 +2,8 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Container, Card, Form, Button, Alert, Spinner } from "react-bootstrap";
 import Layout from "../components/Layout/Layout";
-import { loginSchema } from "../schemas/loginSchema"; // <-- Importado como valor
-import type { LoginInput } from "../schemas/loginSchema"; // <-- Importado como tipo
+import { loginSchema } from "../schemas/loginSchema";
+import type { LoginInput } from "../schemas/loginSchema";
 import { apiFetch } from "../services/api";
 import { guardarToken } from "../services/sesion";
 
@@ -36,7 +36,6 @@ function Login() {
     e.preventDefault();
     setErrorBackend(null);
 
-    // Validación declarativa con safeParse en el front
     const resultado = loginSchema.safeParse(form);
 
     if (!resultado.success) {
@@ -72,6 +71,15 @@ function Login() {
       <Container className="py-5 d-flex justify-content-center">
         <Card style={{ maxWidth: "420px", width: "100%" }} className="shadow-sm border-0 p-3">
           <Card.Body>
+            {/* Botón para volver atrás */}
+            <Button
+              variant="link"
+              className="text-muted p-0 mb-3 text-decoration-none"
+              onClick={() => navigate(-1)}
+            >
+              ← Volver
+            </Button>
+
             <h2 className="mb-4 text-center">Iniciar Sesión</h2>
 
             {errorBackend && (
